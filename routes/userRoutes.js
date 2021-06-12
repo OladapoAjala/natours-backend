@@ -1,5 +1,6 @@
 const express = require('express');
 const userController = require('../controllers/userController');
+const authController = require('../controllers/authController');
 
 const router = express.Router();
 
@@ -7,6 +8,8 @@ const router = express.Router();
  * Check if ID is valid before passing on to other API route handlers
  * **********/
 router.param('id', userController.checkID);
+
+router.post('/signup', authController.signup);
 
 /**********
  * API router for:
