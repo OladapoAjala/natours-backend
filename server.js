@@ -18,7 +18,7 @@ const DB = process.env.DATABASE.replace(
   process.env.DATABASE_PASSWORD
 );
 // const DB =
-//   'mongodb://localhost:27017/natours?readPreference=primary&appname=MongoDB%20Compass&ssl=false';
+// 'mongodb://localhost:27017/natours?readPreference=primary&appname=MongoDB%20Compass&ssl=false';
 
 // Connect to mongodb
 mongoose.connect(DB, {
