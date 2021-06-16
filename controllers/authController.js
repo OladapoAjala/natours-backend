@@ -12,6 +12,18 @@ const signToken = (id) =>
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
 
+const createAndSendToken = (user, statusCode, res) => {
+  const token = signToken(user._id);
+
+  res.status(statusCode).json({
+    status: 'success',
+    token,
+    data: {
+      user,
+    },
+  });
+};
+
 exports.signup = catchAsync(async (req, res, next) => {
   const newUser = await User.create({
     name: req.body.name,
@@ -21,15 +33,7 @@ exports.signup = catchAsync(async (req, res, next) => {
     passwordConfirm: req.body.passwordConfirm,
   });
 
-  const token = signToken(newUser._id);
-
-  res.status(201).json({
-    status: 'success',
-    token,
-    data: {
-      user: newUser,
-    },
-  });
+  createAndSendToken(newUser, 201, res);
 });
 
 exports.login = catchAsync(async (req, res, next) => {
@@ -73,7 +77,7 @@ exports.protect = catchAsync(async (req, res, next) => {
 
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
-  const user = await User.findById(decoded.id);
+  const user = await User.findById(decoded.id).select('+password');
 
   if (!user) {
     return next(
@@ -169,6 +173,33 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
 
   const token = signToken(user._id);
 
+  res.status(200).json({
+    status: 'success',
+    token,
+  });
+});
+
+exports.updatePassword = catchAsync(async (req, res, next) => {
+  const { password, newPassword, newPasswordConfirm } = req.body;
+
+  // let token = req.headers.authorization.split(' ')[1];
+  // const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+  // const user = await User.findById(decoded.id).select('+password');
+
+  if (!newPassword || !newPasswordConfirm) {
+    return next(new AppError('Please input your new password', 401));
+  }
+
+  if (!(await req.user.correctPassword(password, req.user.password))) {
+    return next(new AppError('Incorrect password', 401));
+  }
+
+  req.user.password = newPassword;
+  req.user.passwordConfirm = newPasswordConfirm;
+
+  await req.user.save();
+
+  const token = signToken(req.user._id);
   res.status(200).json({
     status: 'success',
     token,
