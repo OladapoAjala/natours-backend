@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
 
@@ -117,13 +118,45 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
     'host'
   )}/api/v1/users/reset-password/${resetToken}`;
 
-  const message = `Forgot password? Submit new password to ${resetURL}. Please ignore if you didn't forget password`;
+  const message = `Forgot password? Submit new password to \n${resetURL} \nPlease ignore if you didn't forget password`;
 
-  await sendMail({
-    email: user.email,
-    subject: 'Password Reset',
-    message,
-  });
+  try {
+    await sendEmail({
+      email: user.email,
+      subject: 'Password Reset',
+      message,
+    });
+
+    res.status(200).json({
+      status: 'success',
+      message: 'Reset details successfully sent to user email',
+    });
+  } catch (err) {
+    user.passwordResetToken = undefined;
+    user.passwordResetExpires = undefined;
+
+    await user.save({ validateBeforeSave: false });
+
+    return next(
+      new AppError(
+        'Server encountered error while sending message to email, try again',
+        500
+      )
+    );
+  }
 });
 
-exports.resetPassword = catchAsync((req, res, next) => {});
+exports.resetPassword = catchAsync(async (req, res, next) => {
+  const hashedToken = crypto
+    .createHash('sha256')
+    .update(req.params.token)
+    .digest('hex');
+
+  const user = await User.findOne({ passwordResetToken: hashedToken });
+
+  if (user.passwordResetExpires > Date.now()) {
+    return next(new AppError('Reset token has expired', 401));
+  }
+
+  user.
+});
