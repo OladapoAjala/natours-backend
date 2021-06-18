@@ -104,11 +104,15 @@ tourSchema.virtual('durationWeeks').get(function () {
 // });
 
 // QUERY MIDDLEWARE
-// tourSchema.pre(/^find/, function (next) {
-//   this.find({ secretTour: { $ne: true } });
-//   this.start = Date.now();
-//   next();
-// });
+/**
+ * I think this evaluates to:
+ *   Tour.find({ secretTour: { $ne: true }}).find({the query object})
+ */
+tourSchema.pre(/^find/, function (next) {
+  this.find({ secretTour: { $ne: true } });
+  this.start = Date.now();
+  next();
+});
 
 // tourSchema.post(/^find/, function (docs, next) {
 //   console.log(`The query took ${Date.now() - this.start} milliseconds`);
