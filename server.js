@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 // Handle all programming error (non operational error)
 process.on('uncaughtException', (err) => {
   console.log('UNHANDLED EXCEPTION: shutting down gracefully');
+  console.log(err);
   console.log(err.name, err.message);
 
   process.exit(1);
@@ -18,7 +19,7 @@ const DB = process.env.DATABASE.replace(
   process.env.DATABASE_PASSWORD
 );
 // const DB =
-// 'mongodb://localhost:27017/natours?readPreference=primary&appname=MongoDB%20Compass&ssl=false';
+//   'mongodb://localhost:27017/natours?readPreference=primary&appname=MongoDB%20Compass&ssl=false';
 
 // Connect to mongodb
 mongoose.connect(DB, {
