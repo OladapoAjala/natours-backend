@@ -1,5 +1,9 @@
 const nodemailer = require('nodemailer');
 
+/**
+ * A function for sending token to user upon
+ * password reset.
+ */
 const sendEmail = async (options) => {
   const transport = nodemailer.createTransport({
     host: process.env.EMAIL_HOST,
