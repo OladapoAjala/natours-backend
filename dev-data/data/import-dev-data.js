@@ -3,10 +3,10 @@ const mongoose = require('mongoose');
 
 const Tour = require('../../models/tourModels');
 
-// const DB =
-//   'mongodb+srv://dapo:Eu5llusADu13fvXZ@cluster0.p4vqx.mongodb.net/natours?retryWrites=true&w=majority';
 const DB =
-  'mongodb://localhost:27017/natours?readPreference=primary&appname=MongoDB%20Compass&ssl=false';
+  'mongodb+srv://dapo:Eu5llusADu13fvXZ@cluster0.p4vqx.mongodb.net/natours?retryWrites=true&w=majority';
+// const DB =
+//   'mongodb://localhost:27017/natours?readPreference=primary&appname=MongoDB%20Compass&ssl=false';
 
 mongoose
   .connect(DB, {
@@ -18,7 +18,7 @@ mongoose
   .then(console.log('DB connection successful!'))
   .catch((error) => console.log(error));
 
-const tours = JSON.parse(fs.readFileSync(`${__dirname}/tours-simple.json`));
+const tours = JSON.parse(fs.readFileSync(`${__dirname}/tours.json`));
 
 const importData = async () => {
   try {
