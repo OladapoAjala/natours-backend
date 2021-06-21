@@ -25,7 +25,7 @@ exports.checkID = (req, res, next, val) => {
 exports.getAllUsers = catchAsync(async (req, res, next) => {
   const users = await User.find(req.body);
 
-  if (!users) {
+  if (!users.length) {
     return next(new AppError('No user registered yet', 400));
   }
 
