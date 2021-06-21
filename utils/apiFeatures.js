@@ -1,3 +1,7 @@
+/**
+ * APIFeatures bundles a couple of methods for various operations
+ * to be carried out on each data query.
+ */
 class APIFeatures {
   constructor(query, urlQuery) {
     this.query = query;
