@@ -26,6 +26,7 @@ const createAndSendToken = (user, statusCode, res) => {
   }
 
   user.password = undefined;
+  // user.role = undefined;
 
   res.cookie('jwt', token, cookieOptions);
 
