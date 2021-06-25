@@ -4,23 +4,21 @@ const authController = require('../controllers/authController');
 
 const router = express.Router();
 
-/**********
- * Check if ID is valid before passing on to other API route handlers
- * **********/
-router.param('id', userController.checkID);
-
 router.post('/signup', authController.signup);
 router.post('/login', authController.login);
-
 router.post('/forgot-password', authController.forgotPassword);
 router.patch('/reset-password/:token', authController.resetPassword);
-router.patch(
-  '/update-password',
-  authController.protect,
-  authController.updatePassword
-);
-router.patch('/update-me', authController.protect, userController.updateMe);
-router.delete('/delete-me', authController.protect, userController.deleteMe);
+
+router.use(authController.protect);
+
+router.patch('/update-password', authController.updatePassword);
+// These routers update/delete users who are already logged in
+router.patch('/update-me', userController.updateMe);
+router.delete('/delete-me', userController.deleteMe);
+router.get('/me', userController.getMe);
+
+router.use(authController.restrictTo('admin'));
+
 /**********
  * API router for:
  *    get all user
