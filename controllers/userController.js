@@ -2,6 +2,8 @@ const User = require('../models/userModels');
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
 
+const factory = require('./handlerFactory');
+
 const filterData = (dataObj, ...allowedFields) => {
   const filteredObj = {};
   allowedFields.forEach((field) => {
@@ -11,33 +13,7 @@ const filterData = (dataObj, ...allowedFields) => {
   return filteredObj;
 };
 
-exports.checkID = (req, res, next, val) => {
-  if (req.params.id * 1 > 9) {
-    return res.status(404).json({
-      status: 'fail',
-      message: 'Invalid ID',
-    });
-  }
-  next();
-};
-
 // USER HANDLERS
-exports.getAllUsers = catchAsync(async (req, res, next) => {
-  const users = await User.find(req.body);
-
-  if (!users.length) {
-    return next(new AppError('No user registered yet', 400));
-  }
-
-  res.status(200).json({
-    status: 'success',
-    results: users.length,
-    data: {
-      users,
-    },
-  });
-});
-
 exports.updateMe = catchAsync(async (req, res, next) => {
   if (req.body.password || req.body.passwordConfirm) {
     return next(new AppError('This url is not for password update', 400));
@@ -66,30 +42,26 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.getMe = catchAsync(async (req, res, next) => {
+  req.user.password = undefined;
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      data: req.user,
+    },
+  });
+});
+
 exports.createUser = (req, res) => {
   res.status(500).json({
     status: 'Error',
-    message: "This route hasn't been implemented yet",
+    message: "This route hasn't been implemented yet./n Please use /signup",
   });
 };
 
-exports.getUser = (req, res) => {
-  res.status(500).json({
-    status: 'Error',
-    message: "This route hasn't been implemented yet",
-  });
-};
-
-exports.updateUser = (req, res) => {
-  res.status(500).json({
-    status: 'Error',
-    message: "This route hasn't been implemented yet",
-  });
-};
-
-exports.deleteUser = (req, res) => {
-  res.status(500).json({
-    status: 'Error',
-    message: "This route hasn't been implemented yet",
-  });
-};
+// This should only be used by admin users
+exports.getAllUsers = factory.getAll(User);
+exports.getUser = factory.getOne(User);
+exports.updateUser = factory.updateOne(User);
+exports.deleteUser = factory.deleteOne(User);
