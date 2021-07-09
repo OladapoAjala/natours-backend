@@ -1,8 +1,11 @@
 const express = require('express');
 const tourController = require('../controllers/tourController');
 const authController = require('../controllers/authController');
+const reviewRouter = require('./reviewRoutes');
 
 const router = express.Router();
+
+router.use('/:tourId/reviews', reviewRouter);
 
 // router.param('id', tourController.checkID);
 
@@ -28,7 +31,13 @@ router.route('/tour-stats').get(tourController.getTourStats);
  * API router for:
  *    getting monthly tour schedules in a particular year
  **********/
-router.route('/monthly-plan/:year').get(tourController.getMonthlyPlan);
+router
+  .route('/monthly-plan/:year')
+  .get(
+    authController.protect,
+    authController.restrictTo('admin', 'lead-guide', 'guide'),
+    tourController.getMonthlyPlan
+  );
 
 /**********
  * API router for:
@@ -37,8 +46,12 @@ router.route('/monthly-plan/:year').get(tourController.getMonthlyPlan);
  **********/
 router
   .route('/')
-  .get(authController.protect, tourController.getAllTours)
-  .post(tourController.createTour);
+  .get(tourController.getAllTours)
+  .post(
+    authController.protect,
+    authController.restrictTo('admin', 'lead-guide'),
+    tourController.createTour
+  );
 
 /**********
  * API router for:
@@ -48,8 +61,16 @@ router
  **********/
 router
   .route('/:id')
-  .get(tourController.getTour)
-  .patch(tourController.updateTour)
+  .get(
+    authController.protect,
+    authController.restrictTo('admin', 'lead-guide'),
+    tourController.getTour
+  )
+  .patch(
+    authController.protect,
+    authController.restrictTo('admin', 'lead-guide'),
+    tourController.updateTour
+  )
   .delete(
     authController.protect,
     authController.restrictTo('admin', 'lead-guide'),
