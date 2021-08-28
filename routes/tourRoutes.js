@@ -53,6 +53,10 @@ router
     tourController.createTour
   );
 
+router
+  .route('/tours-within/:distance/center/:latlng/unit/:unit')
+  .get(tourController.getToursWithin);
+
 /**********
  * API router for:
  *    getting tour by ID
