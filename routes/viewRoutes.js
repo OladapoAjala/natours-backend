@@ -14,7 +14,7 @@ const POLICY =
   "script-src-attr 'none';" +
   "style-src 'self' https: api.mapbox.com 'unsafe-inline';" +
   'upgrade-insecure-requests;' +
-  "connect-src https: api.mapbox.com 'self' ws: 127.0.0.1:43889";
+  "connect-src http: https: api.mapbox.com 'self' ws: 127.0.0.1:43889";
 
 const router = express.Router();
 
@@ -23,6 +23,8 @@ router.use((req, res, next) => {
   res.append('Access-Control-Allow-Credentials', true);
   next();
 });
+
+router.route('/me').get(authController.protect, viewController.getAccount);
 
 router.use(authController.isLoggedIn);
 
