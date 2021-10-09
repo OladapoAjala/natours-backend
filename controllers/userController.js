@@ -45,6 +45,8 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
 exports.getMe = catchAsync(async (req, res, next) => {
   req.user.password = undefined;
 
+  console.log(res.getHeaders());
+
   res.status(200).json({
     status: 'success',
     data: {

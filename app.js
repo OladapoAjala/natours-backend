@@ -6,6 +6,7 @@ const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
 const path = require('path');
+const cookieParser = require('cookie-parser');
 
 // Error handlers
 const AppError = require('./utils/appError');
@@ -25,6 +26,7 @@ app.set('views', path.join(__dirname, 'views'));
 /***************************************************/
 // Use this to serve static files to the client
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(cookieParser());
 
 // MIDDLEWARES
 // console.log(process.env.NODE_ENV);

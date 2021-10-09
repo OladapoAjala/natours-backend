@@ -134,7 +134,7 @@ tourSchema.virtual('reviews', {
   localField: '_id',
 });
 
-// DOCUMENT MIDDLEWARE
+// DOCUMENT MIDDLEWARE: runs before .save() and .create() only
 tourSchema.pre('save', function (next) {
   this.slug = slugify(this.name, { lower: true });
   next();
@@ -159,7 +159,7 @@ tourSchema.pre('save', function (next) {
  */
 tourSchema.pre(/^find/, function (next) {
   this.find({ secretTour: { $ne: true } });
-  this.start = Date.now();
+  // this.start = Date.now();
   next();
 });
 

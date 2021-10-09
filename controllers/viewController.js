@@ -16,10 +16,14 @@ exports.getTour = catchAsync(async (req, res, next) => {
     select: 'review rating user -tour',
   });
 
-  console.log(tour);
-
   res.status(200).render('tour', {
     title: tour.name,
     tour,
   });
 });
+
+exports.getLoginForm = (req, res, next) => {
+  res.status(200).render('login', {
+    title: 'Log in',
+  });
+};
