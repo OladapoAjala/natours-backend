@@ -7,6 +7,8 @@ const xss = require('xss-clean');
 const hpp = require('hpp');
 const path = require('path');
 const cookieParser = require('cookie-parser');
+const cors = require('cors');
+const compression = require('compression');
 
 // Error handlers
 const AppError = require('./utils/appError');
@@ -24,6 +26,17 @@ app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 
 /***************************************************/
+// app.use((req, res, next) => {
+//   res.setHeader(
+//     'Content-Security-Policy-Report-Only',
+//     "default-src 'self'; font-src 'self'; img-src 'self'; script-src 'self'; style-src 'self'; frame-src 'self'"
+//   );
+//   next();
+// });
+
+// Set CORS
+app.use(cors());
+
 // Use this to serve static files to the client
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cookieParser());
@@ -67,6 +80,7 @@ app.use(
   })
 );
 
+app.use(compression());
 // app.use((req, res, next) => {
 //   req.requestTime = new Date().toISOString();
 //   next();

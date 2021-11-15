@@ -4,10 +4,10 @@
   "description": "Learning nodejs mongoDB express and mongoose",
   "main": "app.js",
   "scripts": {
-    "start:dev": "nodemon server.js",
-    "start:prod": "NODE_ENV=production nodemon server.js",
+    "dev": "nodemon server.js",
+    "prod": "NODE_ENV=production nodemon server.js",
     "debug": "ndb server.js",
-    "watch:js": "parcel watch ./public/js/index.js --out-dir ./public/js --out-file bundle.js"
+    "watch:js": "parcel build ./public/js/index.js --out-dir ./public/js --out-file bundle.js"
   },
   "author": "Oladapo",
   "license": "ISC",
@@ -15,7 +15,9 @@
     "@babel/polyfill": "^7.12.1",
     "axios": "^0.22.0",
     "bcryptjs": "^2.4.3",
+    "compression": "^1.7.4",
     "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
     "dotenv": "^10.0.0",
     "eslint-plugin-react-hooks": "^4.2.0",
     "express": "^4.17.1",
